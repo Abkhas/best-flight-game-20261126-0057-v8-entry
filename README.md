@@ -48,6 +48,32 @@ is vendored under `game/vendor/`, everything else is plain files under `game/`.
 
 Score = acres saved × 10 + drops × 500 + homes standing × 100.
 
+## Flown record
+
+The four screenshots come from a single real sortie flown headlessly
+through the game's own input path (`capture.mjs` — takeoff, scoop, drop on
+the Town Edge, debrief). The debrief numbers:
+
+- **Score 13,900** · 1 drop · 1,240 acres saved · 3,000 gal dropped ·
+  10 of 12 homes standing · fuel 69% · flight time 01:45 ·
+  turnaround 00:29 · loadout WATER.
+
+What that sortie exercised:
+
+- **Three priority zones, wind-driven spread** — Town Edge (12 homes),
+  Eagle Lookout (tower crew of 2), Black Ridge (timber). Fire left alone
+  keeps spreading downwind in the 14-kt north-west wind, and the town
+  loses a home per 130 acres burned.
+- **Pick-1-of-3 loadout** — Water (wide fan, fast reload), Retardant
+  (long line that holds the ridge, slow reload), Mixed (all-rounder).
+  Chosen on the briefing screen; changeable at base.
+- **Fuel + BINGO divert** — fuel burns with throttle. At 25% the HUD
+  orders a divert to Cedar Fork Base; at 0% the engine quits and you
+  glide home.
+- **Turnaround clock** — measured scoop to drop. A slow pass over the
+  runway refills tank and fuel, and the clock tells you how tight the
+  next cycle has to be.
+
 ## Screenshots
 
 `capture.mjs` flies one real sortie headlessly through the game's own input
