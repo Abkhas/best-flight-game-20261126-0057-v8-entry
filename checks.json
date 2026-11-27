@@ -1,0 +1,79 @@
+{
+  "shots": [
+    {
+      "score": 13900,
+      "drops": 1,
+      "acresSaved": 1240,
+      "waterDroppedGal": 3000,
+      "structuresSaved": 10,
+      "fuelPct": 69,
+      "timeSec": 100,
+      "turnaroundSec": 29,
+      "loadout": "water",
+      "crashed": false,
+      "tankGal": 0
+    }
+  ],
+  "checks": {
+    "boot: game object + first frames rendered": {
+      "pass": true,
+      "detail": "frames=6"
+    },
+    "boot: title screen visible": {
+      "pass": true,
+      "detail": "phase=title"
+    },
+    "boot: title names WILDFIRE TANKER + 3 pilot slots": {
+      "pass": true,
+      "detail": ""
+    },
+    "boot: no page errors": {
+      "pass": true,
+      "detail": "GL-0x29bc00812900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)\", source: http://127.0.0.1:8338/game/index.html (0)\n"
+    },
+    "play: sortie started, on the ramp": {
+      "pass": true,
+      "detail": "phase=flying"
+    },
+    "play: took off and reached the lake": {
+      "pass": true,
+      "detail": "phase=toZone"
+    },
+    "play: scooped a full tank off Mirror Lake": {
+      "pass": true,
+      "detail": "tank=0"
+    },
+    "play: dropped on the Town Edge fire line": {
+      "pass": true,
+      "detail": "drops=1"
+    },
+    "play: flown record is real (score + acres + water)": {
+      "pass": true,
+      "detail": "score=13900 acres=1240 water=3000 drops=1 fuel=69% time=100s"
+    },
+    "shot: cover written under 256 KiB": {
+      "pass": true,
+      "detail": "94062 bytes"
+    },
+    "shot: scoop written under 256 KiB": {
+      "pass": true,
+      "detail": "77875 bytes"
+    },
+    "shot: debrief written under 256 KiB": {
+      "pass": true,
+      "detail": "68060 bytes"
+    },
+    "shot: title written under 256 KiB": {
+      "pass": true,
+      "detail": "75224 bytes"
+    },
+    "consistency: debrief shows the flown score + acres": {
+      "pass": true,
+      "detail": "score=13900 acres=1240"
+    },
+    "sheet: contact-sheet.jpg written under 256 KiB": {
+      "pass": true,
+      "detail": "70972 bytes"
+    }
+  }
+}

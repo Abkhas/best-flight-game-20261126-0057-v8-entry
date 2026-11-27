@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WILDFIRE TANKER — Cedar Fork Air Attack</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #1a120c;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #fff; }
+  #gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .panel { background: rgba(12, 16, 22, 0.78); border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px; padding: 10px 12px; backdrop-filter: blur(2px); }
+  .panel h3 { font-size: 11px; letter-spacing: 2px; color: #ffb03a; margin-bottom: 6px; }
+  .big { font-size: 26px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .lbl { font-size: 10px; letter-spacing: 1.5px; color: #bcd2e8; }
+  .row { display: flex; justify-content: space-between; gap: 14px; }
+  #hud { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+  #hud-tl { position: absolute; top: 12px; left: 12px; width: 300px; }
+  #hud-tr { position: absolute; top: 12px; right: 12px; width: 300px; text-align: right; }
+  #hud-bl { position: absolute; bottom: 12px; left: 12px; width: 300px; }
+  #hud-br { position: absolute; bottom: 12px; right: 12px; width: 300px; text-align: right; }
+  .zone { border-left: 4px solid #ff7a33; padding: 5px 8px; margin-top: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; }
+  .zone b { font-size: 13px; letter-spacing: 0.5px; }
+  .zone span { display: block; font-size: 11px; color: #d8e6f5; }
+  .bar { height: 5px; background: rgba(255,255,255,0.18); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: #7dff8a; width: 0%; }
+  .statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .statgrid .cell { text-align: left; }
+  .statgrid .cell:nth-child(even) { text-align: right; }
+  #hud-fuelfill, #hud-tankfill { transition: width 0.3s; }
+  #hud-bingo { display: none; margin-top: 8px; background: #ff3b2f; color: #fff; font-weight: 800;
+    font-size: 14px; letter-spacing: 1px; padding: 6px 8px; border-radius: 5px; animation: blink 1s steps(2) infinite; }
+  #hud-engineout, #hud-crash { display: none; margin-top: 8px; background: #ff3b2f; color: #fff;
+    font-weight: 800; font-size: 14px; letter-spacing: 1px; padding: 6px 8px; border-radius: 5px; }
+  @keyframes blink { 50% { opacity: 0.35; } }
+  #hud-dropstate { font-size: 15px; font-weight: 800; letter-spacing: 0.5px; margin-top: 6px; }
+  #hud-scoop { font-size: 11px; margin-top: 4px; letter-spacing: 0.5px; }
+  #moment { display: none; position: fixed; top: 74px; left: 50%; transform: translateX(-50%);
+    z-index: 6; background: rgba(12, 16, 22, 0.82); border: 2px solid #ffd23e; border-radius: 8px;
+    padding: 10px 22px; font-size: 26px; font-weight: 900; letter-spacing: 1px; color: #ffd23e;
+    text-align: center; white-space: nowrap; }
+  #minimap { width: 100%; height: 148px; display: block; border-radius: 4px; }
+  .screen { position: fixed; inset: 0; z-index: 10; display: none; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, rgba(20, 12, 6, 0.78), rgba(40, 20, 8, 0.58)); }
+  .card { width: 780px; max-width: 94vw; max-height: 92vh; overflow-y: auto; background: rgba(14, 18, 24, 0.92);
+    border: 1px solid rgba(255, 179, 58, 0.5); border-radius: 12px; padding: 26px 30px; }
+  .card h1 { font-size: 44px; letter-spacing: 3px; color: #ffd23e; line-height: 1; }
+  .card h2 { font-size: 15px; letter-spacing: 2px; color: #ffb03a; margin: 4px 0 14px; }
+  .card p { font-size: 14px; line-height: 1.5; color: #e8eef5; margin-bottom: 10px; }
+  .btn { pointer-events: auto; cursor: pointer; background: #ffd23e; color: #1a120c; border: none;
+    border-radius: 6px; padding: 12px 22px; font-size: 16px; font-weight: 800; letter-spacing: 1px; margin-right: 10px; }
+  .btn.ghost { background: transparent; color: #ffd23e; border: 2px solid #ffd23e; }
+  .brief-zone { display: flex; justify-content: space-between; gap: 10px; padding: 7px 10px;
+    background: rgba(255,255,255,0.06); border-radius: 5px; margin-top: 6px; font-size: 13px; }
+  .brief-zone b { color: #ffb03a; }
+  .loadout { pointer-events: auto; cursor: pointer; display: block; width: 100%; text-align: left;
+    background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.25); color: #fff;
+    border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-size: 13px; }
+  .loadout.picked { border-color: #ffd23e; background: rgba(255, 210, 62, 0.16); }
+  .loadout b { font-size: 16px; letter-spacing: 1px; margin-right: 10px; }
+  .loadout i { color: #7dff8a; font-style: normal; font-weight: 700; }
+  .loadout span { display: block; color: #d8e6f5; margin-top: 2px; }
+  .deb-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .deb-cell { background: rgba(255,255,255,0.06); border-radius: 6px; padding: 10px; }
+  .deb-cell .big { font-size: 30px; color: #ffd23e; }
+  .deb-zone { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px;
+    background: rgba(255,255,255,0.06); border-radius: 5px; margin-top: 6px; font-size: 13px; }
+  .deb-zone b { color: #ffb03a; }
+  #deb-log { font-size: 12px; color: #bcd2e8; line-height: 1.7; margin-top: 10px; }
+  .slots { display: flex; gap: 10px; margin: 14px 0; }
+  .slot { flex: 1; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; padding: 8px 10px; font-size: 12px; }
+  .slot b { display: block; font-size: 13px; color: #ffd23e; }
+  .controls { font-size: 12px; color: #bcd2e8; line-height: 1.8; margin-top: 12px; }
+  .controls b { color: #fff; }
+  #title-last { margin-top: 12px; font-size: 13px; color: #7dff8a; letter-spacing: 0.5px; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud" style="display:none">
+  <div id="hud-tl" class="panel">
+    <h3>SORTIE 1 — WILDFIRE TANKER · CEDAR FORK VALLEY</h3>
+    <div class="zone" id="zone-0"><b id="zone-0-name">P1 · TOWN EDGE</b>
+      <span><span id="zone-0-pct">0%</span> CONTAINED · <span id="zone-0-acres">0 AC SAVED</span></span>
+      <div class="bar"><i id="zone-0-bar"></i></div></div>
+    <div class="zone" id="zone-1"><b id="zone-1-name">P2 · EAGLE LOOKOUT</b>
+      <span><span id="zone-1-pct">0%</span> CONTAINED · <span id="zone-1-acres">0 AC SAVED</span></span>
+      <div class="bar"><i id="zone-1-bar"></i></div></div>
+    <div class="zone" id="zone-2"><b id="zone-2-name">P3 · BLACK RIDGE</b>
+      <span><span id="zone-2-pct">0%</span> CONTAINED · <span id="zone-2-acres">0 AC SAVED</span></span>
+      <div class="bar"><i id="zone-2-bar"></i></div></div>
+    <div style="margin-top:8px;font-size:11px;color:#d8e6f5"><span id="hud-wind">WIND NW 14 KT</span> · FIRE RUNS SE</div>
+  </div>
+
+  <div id="hud-tr" class="panel">
+    <div class="statgrid">
+      <div class="cell"><div class="lbl">SCORE</div><div class="big" id="hud-score">0</div></div>
+      <div class="cell"><div class="lbl">ACRES SAVED</div><div class="big" id="hud-acres">0</div></div>
+      <div class="cell"><div class="lbl">DROPS</div><div class="big" id="hud-drops">0</div></div>
+      <div class="cell"><div class="lbl">WATER DROPPED</div><div class="big" id="hud-water">0 GAL</div></div>
+      <div class="cell"><div class="lbl">FLIGHT TIME</div><div class="big" id="hud-clock">00:00</div></div>
+      <div class="cell"><div class="lbl">TURNAROUND</div><div class="big" id="hud-turn">--:--</div></div>
+    </div>
+    <div style="margin-top:8px;text-align:left">
+      <div class="lbl">FUEL <span id="hud-fuel" style="color:#fff;font-size:13px">100%</span></div>
+      <div class="bar"><i id="hud-fuelfill" style="background:#ffd23e;width:100%"></i></div>
+    </div>
+    <div id="hud-bingo">⚠ BINGO FUEL — DIVERT TO CEDAR FORK BASE</div>
+    <div id="hud-engineout">⚠ ENGINE OUT — GLIDE TO BASE</div>
+    <div id="hud-crash">✕ CRASHED — SORTIE OVER</div>
+  </div>
+
+  <div id="hud-bl" class="panel">
+    <h3>VALLEY MAP · <span id="hud-struct">12 / 12 HOMES</span></h3>
+    <canvas id="minimap" width="276" height="148"></canvas>
+    <div style="margin-top:6px;font-size:11px;color:#d8e6f5">ORANGE RING = FIRE · GREEN FILL = CONTAINED · ▲ = TANKER 7</div>
+  </div>
+
+  <div id="hud-br" class="panel">
+    <div class="statgrid">
+      <div class="cell"><div class="lbl">SPEED</div><div class="big" id="hud-spd">0 KT</div></div>
+      <div class="cell"><div class="lbl">ALTITUDE</div><div class="big" id="hud-alt">0 FT</div></div>
+      <div class="cell"><div class="lbl">HEADING</div><div class="big" id="hud-hdg">090°</div></div>
+      <div class="cell"><div class="lbl">LOADOUT</div><div class="big" id="hud-loadout" style="font-size:20px">WATER</div></div>
+    </div>
+    <div style="margin-top:8px;text-align:left">
+      <div class="lbl">TANK <span id="hud-tank" style="color:#fff;font-size:13px">0 / 3,000 GAL</span></div>
+      <div class="bar"><i id="hud-tankfill" style="background:#7dc8ff;width:0%"></i></div>
+    </div>
+    <div id="hud-dropstate">TANK EMPTY</div>
+    <div id="hud-scoop">SCOOP: LOW + 80–140 KT OVER MIRROR LAKE</div>
+  </div>
+</div>
+
+<div id="moment"></div>
+
+<div class="screen" id="screen-title" style="display:flex">
+  <div class="card">
+    <h1>WILDFIRE TANKER</h1>
+    <h2>CEDAR FORK AIR ATTACK · GOLDEN HOUR · TANKER 7</h2>
+    <p>A wildfire is running south-east across Cedar Fork Valley on a 14-knot north-west wind.
+      You fly the twin-prop air tanker: scoop 3,000 gallons off Mirror Lake, drop it on the fire
+      line, and keep the town standing. Three zones burn in priority order — the town edge first.
+      Fuel is a real decision: press on with a load aboard, or divert to base at BINGO.</p>
+    <div id="title-last"></div>
+    <div class="slots">
+      <div class="slot"><b>PILOT · MAVERICK REYES</b>12 sorties · 41,200 AC saved</div>
+      <div class="slot"><b>PILOT · JUNE OKAFOR</b>9 sorties · 33,800 AC saved</div>
+      <div class="slot"><b>PILOT · ELI VANCE</b>4 sorties · 12,400 AC saved</div>
+    </div>
+    <button class="btn" id="btn-brief">BRIEFING →</button>
+    <button class="btn ghost" id="btn-fly">FLY NOW</button>
+    <div class="controls">
+      <b>W/S</b> throttle &nbsp; <b>←/→</b> bank &nbsp; <b>↑/↓</b> pitch &nbsp; <b>SPACE</b> drop water &nbsp;
+      <b>A/D</b> rudder &nbsp; <b>B</b> brake &nbsp; <b>P</b> pause<br>
+      Scoop low (under 60 ft, 80–140 kt) over Mirror Lake · Drop low (under 350 ft, under 200 kt) over a fire zone ·
+      Refill tank + fuel with a slow pass over the runway.
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-briefing">
+  <div class="card">
+    <h1 style="font-size:32px">BRIEFING — SORTIE 1</h1>
+    <h2 id="brief-wind">WIND FROM NW 14 KT — FIRE RUNS SOUTH-EAST TOWARD TOWN</h2>
+    <div id="brief-zones"></div>
+    <p style="margin-top:10px"><span id="brief-base">CEDAR FORK AIR BASE</span><br><span id="brief-lake">MIRROR LAKE</span></p>
+    <h2 style="margin-top:14px">PICK YOUR LOADOUT — ONE TANK, ONE CHOICE</h2>
+    <div id="brief-loadouts"></div>
+    <div style="margin-top:18px">
+      <button class="btn" id="btn-fly2" onclick="document.getElementById('btn-fly').click()">TAKE OFF →</button>
+      <button class="btn ghost" id="btn-loadout-next">CYCLE LOADOUT</button>
+      <button class="btn ghost" id="btn-title">← TITLE</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-debrief">
+  <div class="card">
+    <h1 style="font-size:32px" id="deb-grade">TOWN SAVED — OUTSTANDING SORTIE</h1>
+    <h2>SORTIE DEBRIEF · TANKER 7 · <span id="deb-loadout">WATER</span></h2>
+    <div class="deb-grid">
+      <div class="deb-cell"><div class="lbl">SCORE</div><div class="big" id="deb-score">0</div></div>
+      <div class="deb-cell"><div class="lbl">ACRES SAVED</div><div class="big" id="deb-acres">0</div></div>
+      <div class="deb-cell"><div class="lbl">DROPS</div><div class="big" id="deb-drops">0</div></div>
+      <div class="deb-cell"><div class="lbl">WATER DROPPED</div><div class="big" id="deb-water">0 GAL</div></div>
+      <div class="deb-cell"><div class="lbl">HOMES STANDING</div><div class="big" id="deb-homes">12 / 12</div></div>
+      <div class="deb-cell"><div class="lbl">FUEL LEFT</div><div class="big" id="deb-fuel">100%</div></div>
+      <div class="deb-cell"><div class="lbl">FLIGHT TIME</div><div class="big" id="deb-time">00:00</div></div>
+      <div class="deb-cell"><div class="lbl">TURNAROUND</div><div class="big" id="deb-turn">--:--</div></div>
+      <div class="deb-cell"><div class="lbl">LOADOUT</div><div class="big" id="deb-loadout2" style="font-size:22px">WATER</div></div>
+    </div>
+    <div id="deb-zones"></div>
+    <div id="deb-log"></div>
+    <div style="margin-top:18px">
+      <button class="btn" id="btn-refly">FLY AGAIN</button>
+      <button class="btn ghost" id="btn-title2" onclick="document.getElementById('btn-title').click()">TITLE</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
