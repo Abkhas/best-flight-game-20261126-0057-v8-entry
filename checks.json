@@ -7,8 +7,8 @@
       "waterDroppedGal": 3000,
       "structuresSaved": 10,
       "fuelPct": 69,
-      "timeSec": 100,
-      "turnaroundSec": 29,
+      "timeSec": 105,
+      "turnaroundSec": 27,
       "loadout": "water",
       "crashed": false,
       "tankGal": 0
@@ -29,7 +29,7 @@
     },
     "boot: no page errors": {
       "pass": true,
-      "detail": "GL-0x29bc00812900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)\", source: http://127.0.0.1:8338/game/index.html (0)\n"
+      "detail": "GL-0x14cc000dbf00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)\", source: http://127.0.0.1:8338/game/index.html (0)\n"
     },
     "play: sortie started, on the ramp": {
       "pass": true,
@@ -49,23 +49,23 @@
     },
     "play: flown record is real (score + acres + water)": {
       "pass": true,
-      "detail": "score=13900 acres=1240 water=3000 drops=1 fuel=69% time=100s"
+      "detail": "score=13900 acres=1240 water=3000 drops=1 fuel=69% time=105s"
     },
     "shot: cover written under 256 KiB": {
       "pass": true,
-      "detail": "94062 bytes"
+      "detail": "90253 bytes"
     },
     "shot: scoop written under 256 KiB": {
       "pass": true,
-      "detail": "77875 bytes"
+      "detail": "77639 bytes"
     },
     "shot: debrief written under 256 KiB": {
       "pass": true,
-      "detail": "68060 bytes"
+      "detail": "67692 bytes"
     },
     "shot: title written under 256 KiB": {
       "pass": true,
-      "detail": "75224 bytes"
+      "detail": "74910 bytes"
     },
     "consistency: debrief shows the flown score + acres": {
       "pass": true,
@@ -73,7 +73,7 @@
     },
     "sheet: contact-sheet.jpg written under 256 KiB": {
       "pass": true,
-      "detail": "70972 bytes"
+      "detail": "68703 bytes"
     }
   }
 }

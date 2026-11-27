@@ -68,7 +68,7 @@ export function fillDebrief(state) {
     )).join('');
   }
   const feed = el('deb-log');
-  if (feed) feed.innerHTML = state.log.slice(-6).map((l) => '<div>▸ ' + l + '</div>').join('');
+  if (feed) feed.innerHTML = state.log.slice(-4).map((l) => '<div>▸ ' + l + '</div>').join('');
   set('deb-grade', state.crashed ? 'SORTIE LOST'
     : totalAcresSaved(state) >= 1200 ? 'TOWN SAVED — OUTSTANDING SORTIE'
     : totalAcresSaved(state) >= 600 ? 'FIRE HELD — GOOD SORTIE'
