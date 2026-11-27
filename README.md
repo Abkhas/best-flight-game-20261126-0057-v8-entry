@@ -56,7 +56,7 @@ the Town Edge, debrief). The debrief numbers:
 
 - **Score 13,900** · 1 drop · 1,240 acres saved · 3,000 gal dropped ·
   10 of 12 homes standing · fuel 69% · flight time 01:45 ·
-  turnaround 00:29 · loadout WATER.
+  turnaround 00:27 · loadout WATER.
 
 What that sortie exercised:
 
